@@ -1,0 +1,124 @@
+/*Below are test cases for each function.  After all these tests, the outputs are displayed at the bottom of this file in the section titled "Outputs" */
+
+?- ['sde3_example_data.pro'].
+
+?- startup.
+
+?- image_tgr11(A),printImage(A),nl.
+
+?- image_tgr12(A),printImage(A),nl.
+
+?- image_tgr21(A),image_tgr12(B),diffIm(A,B,C), printImage(C),nl,nl.
+
+?- image_tgr11(A),image_tgr12(B),diffIm(A,B,C),printImage(C),nl,nl.
+
+?- image_tgr11(A),image_tgr12(B),isDiff(A,B),nl,true -> write(A), write(B); write('false'), nl, nl.
+
+?- nl,nl,image_tgr11(A),image_tgr11(B),isDiff(A,B),nl, true -> write(A), write(B); write('false'),nl,nl.
+
+?- rowmask([0,1,1],[1,1,0],[1,0,-1],A,B), write('A = '), write(A), write('B = '), write(B), nl,nl.
+
+?- rowmask([1,1,0,0,0],[0,0,0,1,1],[-1,-1,0,1,1],A,B), write('A = '), write(A), write('B = '), write(B),nl,nl.
+
+?- image_tgr11(A),image_tgr12(B),diffIm(A,B,C),mask(A,B,C,MN,MP),write('MN = '), write(MN), write('MP = '), write(MP),nl,nl.
+
+?- image_tgr11(A),image_tgr12(B),diffIm(A,B,C),mask(A,B,C,MN,MP),printImage(MN),printImage(MP),nl,nl.
+
+?- image_mn1k(MN),centImRow(MN,1,CIR1), write('CIR1 = '), write(CIR1),nl,nl.
+
+?- image_mn1k(MN),centImCol(MN,1,CIC1),write('CIC1 = '), write(CIC1),nl,nl.
+
+?- image_mp1k(MP),centImRow(MP,1,CIR2), write('CIR2 = '), write(CIR2),nl,nl.
+
+?- image_mp1k(MP),centImCol(MP,1,CIC2), write('CIC2 = '), write(CIC2),nl,nl.
+
+?- image_tgr11(T1),image_tgr12(T2),motion(T1,T2,Moti,Motj), write('Moti = '), write(Moti), write('Motj = '), write(Motj),nl,nl.
+
+?- image_i1cr(T1),image_i2cr(T2),motion(T1,T2,Moti,Motj), write('Moti = '), write(Moti), write('Motj = '), write(Motj),nl,nl.
+
+?- image_tgr21(T1),image_tgr22(T2),motion(T1,T2,Moti,Motj), write('Moti = '), write(Moti), write('Motj = '), write(Motj),nl,nl.
+
+?- image_tgr31(T1),image_tgr32(T2),motion(T1,T2,Moti,Motj), write('Moti = '), write(Moti), write('Motj = '), write(Motj),nl,nl.
+
+?- image_tgr31(T1),image_tgr31(T2),motion(T1,T2,Moti,Motj), write('Moti = '), write(Moti), write('Motj = '), write(Motj),nl,nl.
+
+
+/*      OUTPUTS        */
+/*
+?- ['motion.log'].
+%  sde3_example_data.pro compiled 0.00 sec, 1 clauses
+%  motion.pro compiled 0.00 sec, 1 clauses
+0 0 0 20 0 
+0 10 10 0 0 
+0 10 10 0 0 
+0 0 0 0 0 
+0 0 0 0 0 
+
+0 0 0 0 0 
+0 10 10 0 0 
+0 10 10 0 0 
+0 20 0 0 0 
+0 0 0 0 0 
+
+0 0 0 -10 0 
+0 10 10 -10 -10 
+0 10 10 -10 -10 
+0 20 0 -10 0 
+0 0 0 0 0 
+
+
+0 0 0 -20 0 
+0 0 0 0 0 
+0 0 0 0 0 
+0 20 0 0 0 
+0 0 0 0 0 
+
+
+
+[[0,0,0,20,0],[0,10,10,0,0],[0,10,10,0,0],[0,0,0,0,0],[0,0,0,0,0]][[0,0,0,0,0],[0,10,10,0,0],[0,10,10,0,0],[0,20,0,0,0],[0,0,0,0,0]]
+
+false
+
+A = [0,0,1]B = [1,0,0]
+
+A = [1,1,0,0,0]B = [0,0,0,1,1]
+
+MN = [[0,0,0,20,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0]|_G1024]MP = [[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,20,0,0,0],[0,0,0,0,0]|_G1027]
+
+0 0 0 20 0 
+0 0 0 0 0 
+0 0 0 0 0 
+0 0 0 0 0 
+0 0 0 0 0 
+0 0 0 0 0 
+0 0 0 0 0 
+0 0 0 0 0 
+0 20 0 0 0 
+0 0 0 0 0 
+
+
+CIR1 = 200
+
+CIC1 = 100
+
+CIR2 = 100
+
+CIC2 = 150
+
+Moti = 3.0Motj = -2.0
+
+Moti = 1.0Motj = 5.0
+
+Moti = 1.0Motj = -1.9999999999999996
+
+Moti = 0.0Motj = -2.0
+
+***** No Motion in This Case *****
+Moti = _G174Motj = _G175
+
+% motion.log compiled 0.01 sec, 5 clauses
+true.
+
+?- 
+*/
+

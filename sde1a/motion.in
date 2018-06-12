@@ -1,0 +1,45 @@
+
+%{
+#include <stdlib.h>
+#include <stdio.h>
+#include "motion.tab.h"
+extern int yylex();
+
+%}
+
+
+
+%option noyywrap nounput noinput
+
+%%
+
+
+u 		{return UP;}
+d 		{return DOWN;}
+l 		{return LEFT;}
+r 		{return RIGHT;}
+n 		{return NOMOVEMENT;}
+
+
+[0-9] 	{
+		yylval.ival = atoi(yytext);
+		return DIGIT;
+		}
+
+[\n] 	;
+
+
+. 		{
+		return GARBAGE;
+		}
+
+%%
+
+
+
+
+
+
+
+
+

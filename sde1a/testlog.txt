@@ -1,0 +1,101 @@
+
+
+-----
+Test string: lllll
+
+ Motion Trajectory Checker (Scanner/Parser)
+ CPSC/ECE 3520 Spring 2015
+
+
+***** congratulations *****
+***** scan/parse for valid motion path successful *****
+
+
+-----
+Test string: nuunlllrn
+
+ Motion Trajectory Checker (Scanner/Parser)
+ CPSC/ECE 3520 Spring 2015
+
+
+***** congratulations *****
+***** scan/parse for valid motion path successful *****
+
+
+-----
+Test string: u314d5r4u2
+
+ Motion Trajectory Checker (Scanner/Parser)
+ CPSC/ECE 3520 Spring 2015
+
+
+***** congratulations *****
+***** scan/parse for valid motion path successful *****
+
+
+-----
+Test string: rrdlurdlu
+
+ Motion Trajectory Checker (Scanner/Parser)
+ CPSC/ECE 3520 Spring 2015
+
+
+***** congratulations *****
+***** scan/parse for valid motion path successful *****
+
+
+-----
+Test string: rrrdldrull
+
+ Motion Trajectory Checker (Scanner/Parser)
+ CPSC/ECE 3520 Spring 2015
+
+
+***** congratulations *****
+***** scan/parse for valid motion path successful *****
+
+
+-----
+Test string: rrrddlurdllluu
+
+ Motion Trajectory Checker (Scanner/Parser)
+ CPSC/ECE 3520 Spring 2015
+
+
+***** congratulations *****
+***** valid motion path AND CLOSED PATH *****
+
+
+-----
+Test string: nnnnnn
+
+ Motion Trajectory Checker (Scanner/Parser)
+ CPSC/ECE 3520 Spring 2015
+
+
+***** congratulations *****
+***** scan/parse for valid motion path successful *****
+
+
+-----
+Test string: rr uuu
+
+ Motion Trajectory Checker (Scanner/Parser)
+ CPSC/ECE 3520 Spring 2015
+syntax error
+
+
+-----
+Test string: asdfjkl
+
+ Motion Trajectory Checker (Scanner/Parser)
+ CPSC/ECE 3520 Spring 2015
+syntax error
+
+
+-----
+Test string: rrrddlurbllluu
+
+ Motion Trajectory Checker (Scanner/Parser)
+ CPSC/ECE 3520 Spring 2015
+syntax error

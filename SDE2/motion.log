@@ -1,0 +1,176 @@
+# #use "motion.caml";;
+val diffImRow : int list * int list -> int list = <fun>
+val diffIm : int list list * int list list -> int list list = <fun>
+val diff : int list -> bool = <fun>
+val noDiff : int list list -> bool = <fun>
+val pp_my_elem : int list -> string = <fun>
+val pp_my_row : int list list -> string list = <fun>
+val pp_my_image : int list list -> unit = <fun>
+val posmask_call : int list * int list -> int list = <fun>
+val rowmaskpos : int list * int list -> int list = <fun>
+val maskpos : int list list * int list list -> int list list = <fun>
+val negmask_call : int list * int list -> int list = <fun>
+val rowmaskneg : int list * int list -> int list = <fun>
+val maskneg : int list list * int list list -> int list list = <fun>
+val tuplediffint : (int * int) * (int * int) -> int * int = <fun>
+val increment : int list * int -> int = <fun>
+val fnzrow : int list -> int = <fun>
+val row_cal : int * 'a * int list list -> int * int = <fun>
+val firstnonzero : int list list -> int * int = <fun>
+val motion : int list list * int list list -> int * int = <fun>
+
+
+# diffImRow([1;2],[1;2]);;
+- : int list = [0; 0]
+# diffImRow([1;2;0;1;2],[0;0;0;0;0]);;
+- : int list = [-1; -2; 0; -1; -2]
+# diffImRow([1;2;3;4;5],[6;7;8;9;10]);;
+- : int list = [5; 5; 5; 5; 5]
+# diffImRow([1],[2]);;                 
+- : int list = [1]
+# diffImRow([9],[1]);;
+- : int list = [-8]
+
+
+
+# diffIm([[1;2];[2;3]],[[1;2];[2;3]]);;
+- : int list list = [[0; 0]; [0; 0]]
+# diffIm([[9];[9]],[[8];[8]]);;        
+- : int list list = [[-1]; [-1]]
+# diffIm([[1;2];[2;3]],[[-91;-21];[-42;-23]]);;
+- : int list list = [[-92; -23]; [-44; -26]]
+# diffIm([[0;0];[-4;-2]],[[0;0];[4;2]]);;      
+- : int list list = [[0; 0]; [8; 4]]
+# diffIm([[10;10];[10;10]],[[20;10];[-10;-20]]);;  
+- : int list list = [[10; 0]; [-20; -30]]
+
+# noDiff([[0;0];[0;0]]);;
+- : bool = true
+# noDiff([[0;0];[0;1]]);;
+- : bool = false
+# noDiff([[0;1];[0;0]]);;
+- : bool = false
+# noDiff([[1;0];[0;0]]);;
+- : bool = false
+# noDiff([[1;1];[1;1]]);;
+- : bool = false
+
+
+## pp_my_image([[1;1];[1;1]]);;
+1 1
+1 1- : unit = ()
+# pp_my_image([[1;1;2;3;4;5];[1;1;2;3;4;5]]);;
+1 1 2 3 4 5
+1 1 2 3 4 5- : unit = ()
+# pp_my_image([[-91;-21];[-42;-23]]);;           
+-91 -21
+-42 -23- : unit = ()
+# pp_my_image([[0;0];[0;0]]);;        
+0 0
+0 0- : unit = ()
+# pp_my_image([[9;8;7;6;5;4];[1;2;3;4;5;6];[5;6;4;1;3;2]]);;
+9 8 7 6 5 4
+1 2 3 4 5 6
+5 6 4 1 3 2- : unit = ()
+
+# rowmaskpos([1;2;3],[1;1;1]);;  
+- : int list = [1; 2; 3]
+# rowmaskpos([1;2;3],[-1;-1;-1]);;
+- : int list = [0; 0; 0]
+# rowmaskpos([1;2;3],[0;0;0]);;   
+- : int list = [0; 0; 0]
+# rowmaskpos([1;2;3;4;5],[-1;0;1;0;0]);;
+- : int list = [0; 0; 3; 0; 0]
+# rowmaskpos([1;2;3;4;5],[-11;-14;9;7;3]);;
+- : int list = [0; 0; 3; 4; 5]
+
+
+# maskpos([[1;2;3];[4;5;6];[7;8;9]],[[0;0;0];[0;0;0];[0;0;0]]);;
+- : int list list = [[0; 0; 0]; [0; 0; 0]; [0; 0; 0]]
+# maskpos([[1;2;3];[4;5;6];[7;8;9]],[[1;1;1];[0;0;0];[0;0;0]]);;
+- : int list list = [[1; 2; 3]; [0; 0; 0]; [0; 0; 0]]
+# maskpos([[1;2;3];[4;5;6];[7;8;9]],[[0;0;0];[0;0;0];[0;-1;1]]);;
+- : int list list = [[0; 0; 0]; [0; 0; 0]; [0; 0; 9]]
+# maskpos([[1;2;3];[4;5;6];[7;8;9]],[[-1;-1;-1];[1;1;1];[0;-1;1]]);;
+- : int list list = [[0; 0; 0]; [4; 5; 6]; [0; 0; 9]]
+# maskpos([[1;2;3];[4;5;6];[7;8;9]],[[0;-2;9];[7;3;1];[0;0;0]]);;   
+- : int list list = [[0; 0; 3]; [4; 5; 6]; [0; 0; 0]]
+
+
+
+# rowmaskneg([1;2;3],[1;1;1]);;            
+- : int list = [0; 0; 0]
+# rowmaskneg([1;2;3],[-1;-1;-1]);;         
+- : int list = [1; 2; 3]
+# rowmaskpos([1;2;3],[0;0;0]);;            
+- : int list = [0; 0; 0]
+# rowmaskneg([1;2;3;4;5],[-1;0;1;0;0]);;   
+- : int list = [1; 0; 0; 0; 0]
+# rowmaskneg([1;2;3;4;5],[-11;-14;9;7;3]);;
+- : int list = [1; 2; 0; 0; 0]
+
+
+# maskneg([[1;2;3];[4;5;6];[7;8;9]],[[0;-2;9];[7;3;1];[0;0;0]]);;
+- : int list list = [[0; 2; 0]; [0; 0; 0]; [0; 0; 0]]
+# maskneg([[1;2;3];[4;5;6];[7;8;9]],[[1;1;1];[0;0;0];[0;0;0]]);;    
+- : int list list = [[0; 0; 0]; [0; 0; 0]; [0; 0; 0]]
+# maskneg([[1;2;3];[4;5;6];[7;8;9]],[[0;0;0];[0;0;0];[0;0;0]]);;    
+- : int list list = [[0; 0; 0]; [0; 0; 0]; [0; 0; 0]]
+# maskneg([[1;2;3];[4;5;6];[7;8;9]],[[-1;-1;-1];[-1;-1;-1];[0;-1;1]]);;
+- : int list list = [[1; 2; 3]; [4; 5; 6]; [0; 8; 0]]
+# maskneg([[1;2;3];[4;5;6];[7;8;9]],[[-1;-1;-1];[1;1;1];[0;-1;1]]);;
+- : int list list = [[1; 2; 3]; [0; 0; 0]; [0; 8; 0]]
+
+
+# tuplediffint((5,4),(2,5));;
+- : int * int = (-3, 1)
+# tuplediffint((1,1),(2,2));;
+- : int * int = (1, 1)
+# tuplediffint((11,11),(2,2));; 
+- : int * int = (-9, -9)
+# tuplediffint((-1,-1),(2,2));;
+- : int * int = (3, 3)
+# tuplediffint((8,1),(9,0));;  
+- : int * int = (1, -1)
+
+
+# fnzrow([0;0;0;1]);;
+- : int = 4
+# fnzrow([0;0;-10;-1]);;
+- : int = 3
+# fnzrow([0;0;0;0]);;   
+- : int = 0
+# fnzrow([1;0;0;0]);;
+- : int = 1
+# fnzrow([-1;0;1;0]);;
+- : int = 1
+
+
+# firstnonzero([[0;0;0];[0;0;1]]);;
+- : int * int = (2, 3)
+# firstnonzero([[0;0;0];[0;0;0]]);;
+- : int * int = (0, 0)
+# firstnonzero([[0;0;0];[0;0;0];[4;5;6]]);;
+- : int * int = (3, 1)
+# firstnonzero([[-1;0;0];[1;0;0];[-4;5;-6]]);;
+- : int * int = (1, 1)
+# firstnonzero([[0;0;-9];[1;0;0];[-4;5;-6]]);;
+- : int * int = (1, 3)
+
+
+# motion([[0;0];[0;0]],[[0;0];[0;0]]);;
+Exception: Failure "there is no discernible motion".
+# motion([[0;1];[1;0]],[[0;4];[1;0]]);;  
+- : int * int = (1, 2)
+# motion([[11;1];[1;0]],[[9;4];[11;0]]);;
+- : int * int = (0, 1)
+# motion([[11;1];[31;0]],[[19;4];[11;0]]);;
+- : int * int = (-1, 0)
+# motion([[9;1];[9;0]],[[9;4];[9;0]]);;    
+- : int * int = (1, 2)
+# motion([[9;4];[9;0]],[[9;4];[9;0]]);;
+Exception: Failure "there is no discernible motion".
+
+
+
+

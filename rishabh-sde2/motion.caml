@@ -1,0 +1,87 @@
+(*diffImRow : function two subtract two row*)
+
+let rec diffImRow = function (alist,blist) -> 
+if (alist == [] || blist == []) then []
+else (List.hd blist - List.hd alist)::diffImRow(List.tl alist, List.tl blist);;
+
+(*diffIm : function two subtract 2 list by list *)
+
+let rec diffIm = function (alist,blist) ->
+if (alist = [] || blist = []) then []
+else diffImRow(List.hd alist, List.hd blist)::diffIm(List.tl alist, List.tl blist);;
+
+(*noDiff : if all elements are zero return true*)
+
+let rec diff = function (alist) ->
+if(List.hd alist != 0) then false
+else if(List.tl alist = []) then true
+else diff(List.tl alist);; 
+let rec noDiff = function (alist) ->
+if (List.tl(alist) = []) then diff(List.hd (alist))
+else diff(List.hd (alist)) && noDiff(List.tl (alist));;
+	
+(*pp_my_image: printing list by list*)
+
+let pp_my_elem = function(alist)-> String.concat " " (List.map string_of_int alist);;
+let rec pp_my_row = function (alist)->
+if (alist = []) then []
+else pp_my_elem(List.hd alist)::pp_my_row(List.tl alist);;
+let pp_my_image = function(alist)-> print_string(String.concat "\n" (pp_my_row(alist)));;
+
+(*Rowmaskpos: Subsitute image 2 value for +ve diff image else 0*)
+
+let rec posmask_call = function (alist,difflist)->
+if (List.tl alist = []) then(if(List.hd difflist > 0) then [List.hd alist] else [(0)])
+else if (List.hd difflist > 0) then ((List.hd alist) :: posmask_call(List.tl alist,List.tl difflist))
+else((0)::posmask_call(List.tl alist,List.tl difflist));;
+let rowmaskpos (image2row,diff2row) = posmask_call(image2row,diff2row);;
+
+(*maskpos: work for list by list*)
+
+let rec maskpos = function (alist,difflist)->
+if (alist = [] || difflist = []) then []
+else rowmaskpos(List.hd alist,List.hd difflist)::maskpos(List.tl alist, List.tl difflist);;
+
+(*Rowmaskneg: Subsitute image 2 value for -ve diff image else 0*)
+
+let rec negmask_call = function (blist,difflist)->
+if (List.tl blist = []) then(if(List.hd difflist < 0) then [List.hd blist] else [(0)])
+else if (List.hd difflist < 0) then ((List.hd blist) :: negmask_call(List.tl blist,List.tl difflist))
+else((0)::negmask_call(List.tl blist,List.tl difflist));;
+let rowmaskneg (image1row,diff1row)= negmask_call(image1row,diff1row);;
+
+(*maskneg: work for list by list*)
+
+let rec maskneg = function (alist,difflist)->
+if (alist = [] || difflist = []) then []
+else rowmaskneg(List.hd alist,List.hd difflist)::maskneg(List.tl alist, List.tl difflist);;
+
+(*tuplediffint: difference for 2 tuples*)
+
+let tuplediffint = function ((a,b),(c,d))-> ((c-a),(d-b));;
+
+(*fnzrow: Find coloumn for first non zero number in a list*)
+
+let rec increment = function (alist,n)->
+if (List.tl alist = []) then (if (List.hd alist=0) then 0 else n)
+else if (List.hd alist = 0) then increment(List.tl alist,n+1)
+else n;;
+let fnzrow (alist)= increment (alist,1);;
+
+(*firstnonzero: Finding row and column for list by list*)
+
+let rec row_cal = function (i,j,alist)->
+if(alist = []) then (0,0) 
+else if(List.tl alist = []) then ( if(fnzrow(List.hd alist) != 0) then (i,fnzrow(List.hd alist)) else (0,0)) 
+else if(fnzrow(List.hd alist) != 0) then (i,fnzrow(List.hd alist))
+else row_cal(i+1,j,List.tl alist);; 
+let firstnonzero (alist)= row_cal(1,1,alist);;
+
+(*motion: Takes two image and return tupple difference of their firstnonzero Row and col*)
+
+let motion = function (image1,image2)->
+if (image1 = [] && image2 = []) then (0,0)
+else if (tuplediffint(firstnonzero(maskneg(image1,diffIm(image1,image2))),firstnonzero(maskpos(image2,diffIm(image1,image2))))=(0,0)) then failwith "there is no discernible motion"
+else tuplediffint(firstnonzero(maskneg(image1,diffIm(image1,image2))),firstnonzero(maskpos(image2,diffIm(image1,image2))));;
+
+(**********************************************************************************************************************************)

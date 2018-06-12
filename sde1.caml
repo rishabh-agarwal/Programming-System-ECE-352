@@ -1,0 +1,166 @@
+(*hop11Activation Started *)
+let rec hop11Activation = fun (net,alpha,oldo) ->
+  if (net > alpha) then 1.0 else if (net < alpha) then -1.0 else oldo;;
+(*hop11Activation Finish *)
+
+
+(*Energy function started*)
+
+(*Function for adding elements *)
+let rec sum = function
+[] -> 0.0
+| x::t -> x +.sum t;;
+
+let rec enermul1 = fun (aList, aL) ->
+  if (List.tl aList == []) then [(List.hd aList) *. (List.hd aL)]
+  else (List.hd aList *. List.hd aL) :: enermul1(List.tl aList, List.tl aL);;
+
+(*Creates List of List *)
+let rec enermul2 = fun (aList, aL) ->
+  if (List.tl aList == []) then [sum(enermul1(List.hd aList,aL))]
+  else [sum(enermul1((List.hd aList, aL)))] @ (enermul2(List.tl aList, aL));;
+
+(*Final Energy calculated with the formula*)
+let rec energy = fun (aList1, aList2) -> -0.5 *. sum(enermul1(aList1,enermul2(aList2,aList1)));;
+
+(* Energy Finish *)
+
+
+
+(*netUnit function started*)
+
+let rec netmul1 = fun (aList, aL) ->
+  if (List.tl aList == []) then [(List.hd aList) *. (List.hd aL)]
+  else (List.hd aList *. List.hd aL) :: enermul1(List.tl aList, List.tl aL);;
+
+let rec netUnit = fun (aList1,aList2) -> sum(netmul1(aList1,aList2));;
+
+(* netUnit finish *)
+
+
+
+(*netAll function started *)
+
+let rec netamul1 = fun (aList, aL) ->
+  if (List.tl aList == []) then [(List.hd aList) *. (List.hd aL)]
+  else (List.hd aList *. List.hd aL) :: enermul1(List.tl aList, List.tl aL);;
+
+let rec netamul2 = fun (aList, aL) ->
+  if (List.tl aList == []) then [sum(enermul1(List.hd aList,aL))]
+  else [sum(enermul1((List.hd aList, aL)))] @ (enermul2(List.tl aList, aL));;
+
+let rec netAll = fun (aList1,aList2) -> netamul2(aList2,aList1);;
+
+(*netAll finish*)
+
+
+
+(*nextState function started*)
+
+(*Squashing used to implement by comparing element with alpha*)
+let rec compare = fun (aList, alpha) ->
+  if (List.tl aList == []) then (if (List.hd aList > alpha) then [1.0] else if (List.hd aList < alpha) then [-1.0] else [0.0])
+  else (if (List.hd aList > alpha) then 1.0 else if (List.hd aList < alpha) then -1.0 else 0.0) :: compare(List.tl aList, alpha);;
+
+let rec nextState = fun (aList, aL, alpha) -> compare((netAll(aList, aL)),alpha);;
+
+(*nextState finish*)
+
+
+
+(*updateN function started *)
+
+let rec updateN = fun (aList, aL, alpha, a) ->
+  if (a == 0) then aList
+  else updateN (nextState(aList, aL, alpha), aL, alpha, a-1);;
+
+(*updateN finish*)
+
+
+
+(*findsEquilibrium function started *)
+
+let rec findsEquilibrium = fun (aList, aL, alpha, range) ->
+  if ((updateN(aList, aL, alpha, (range - 1))) = (updateN(aList, aL, alpha, (range)))) then true
+  else false;;
+
+(*findsEquilibrium finish*)
+
+
+
+(*hopTrainAstate function Started *)
+
+let rec createlist = fun aList -> 
+  if (aList == []) then []
+  else [(List.hd aList)] :: createlist(List.tl aList);;
+
+let rec mul1 = fun (aList, aL) ->
+  if (List.tl aList == []) then [((List.hd aList) *. (List.hd aL))]
+  else ((List.hd aList) *. (List.hd aL)) :: (mul1 (List.tl aList, aL));;
+
+(*Creating List of List*)
+let rec mul2 = fun (aList, aL) -> if (List.tl aL == []) then [(mul1((aList), (List.hd aL)))]
+  else [(mul1((aList), (List.hd aL)))] @ mul2(((aList),(List.tl aL)));;
+
+let rec mainmul1 = fun (aList, aL) ->
+  if (List.tl aList == []) then [((List.hd aList) *. (List.hd aL))]
+  else ((List.hd aList) *. (List.hd aL)) :: (mainmul1 (List.tl aList, List.tl aL));;
+
+let rec mainmul = fun (aList, aL) -> if (List.tl aList == []) then [(mainmul1((List.hd aList), (List.hd aL)))]
+  else [(mainmul1((List.hd aList), (List.hd aL)))] @ mainmul(((List.tl aList),(List.tl aL)));;
+
+(*To make the diagonal elements as zero *)
+let rec hopTrainAstate = fun (aList) -> mainmul(mul2(aList,createlist(aList)),[[0.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0];
+[1.0;0.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0];
+[1.0;1.0;0.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0];
+[1.0;1.0;1.0;0.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0];
+[1.0;1.0;1.0;1.0;0.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0];
+[1.0;1.0;1.0;1.0;1.0;0.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0];
+[1.0;1.0;1.0;1.0;1.0;1.0;0.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0];
+[1.0;1.0;1.0;1.0;1.0;1.0;1.0;0.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0];
+[1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;0.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0];
+[1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;0.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0];
+[1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;0.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0];
+[1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;0.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0];
+[1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;0.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0];
+[1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;0.0;1.0;1.0;1.0;1.0;1.0;1.0];
+[1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;0.0;1.0;1.0;1.0;1.0;1.0];
+[1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;0.0;1.0;1.0;1.0;1.0];
+[1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;0.0;1.0;1.0;1.0];
+[1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;0.0;1.0;1.0];
+[1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;0.0;1.0];
+[1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;1.0;0.0]]);;
+
+(*hopTrainAstate finish*)
+
+
+
+(*hopTrain function started*)
+
+let rec hopAdd = fun (aList, aL) ->
+  if (List.tl aList == []) then [(List.hd aList) +. (List.hd aL)]
+  else (List.hd aList +. List.hd aL) :: hopAdd(List.tl aList, List.tl aL);;
+
+let rec hopAdd2 = fun (aList, aL) ->
+  if (List.tl aList == []) then [hopAdd(List.hd aList,(List.hd(List.hd aL)))]
+  else [hopAdd(List.hd aList,(List.hd(List.hd aL)))] @ (hopAdd2(List.tl aList,[List.tl(List.hd aL)]));;
+
+(*Creating weight matrix of all the states*)
+let rec hopList = fun (aList) ->
+  if (List.tl aList == []) then [hopTrainAstate(List.hd aList)]
+  else [hopTrainAstate(List.hd aList)] @ (hopList(List.tl aList));;
+
+(*checks if the tail of tail of list of list has 2 elements*)
+let rec hopReturn = fun (aList) ->
+ if (List.tl aList == []) then 1
+ else 0;;
+
+let rec hopT = fun (aList) ->
+  if (List.tl aList == []) then (List.hd aList)
+  else if (hopReturn(List.tl aList) == 1) then (hopAdd2((List.hd aList),(List.tl aList)))
+  else hopAdd2((hopT(List.tl aList)),[List.hd aList]);;
+
+let rec hopTrain = fun (aList) -> hopT(hopList(aList));;
+
+(*hopTrain finish*)
+

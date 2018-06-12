@@ -1,0 +1,63 @@
+open List;;
+
+(* get image data *)
+
+#use"test1.caml";;  (** i1 *)
+#use"test2.caml";;  (** i2 *)
+
+#use"test1b.caml";;  (** i1b *)
+#use"test2b.caml";;  (** i2b *)
+
+#use"test1c.caml";;  (** i1c *)
+#use"test2c.caml";;  (** i2c *)
+
+#use"test1d.caml";;  (** i1d -- case c reversed *)
+#use"test2d.caml";;  (** i2d *)
+
+(***********************  testing cases ***********************)
+
+let tst1 = diffImRow(hd(i1),hd(i2));; 
+
+let tst2 = diffIm(i1,i2);;
+
+let nd1 = noDiff(diffIm(i1,i2));;
+
+let nd2 = noDiff(diffIm(i1,i1));;
+
+let nd3 = noDiff(diffIm(i2,i1));;
+
+let pp1 = pp_my_image(i1);;
+
+let pp2 = pp_my_image(i2);;
+
+let mn1 = maskneg(i1,diffIm(i1,i2));;
+
+let mp1 = maskpos(i2,diffIm(i1,i2));;
+
+let fnzr1 = rowmaskneg([2;2;4;5;6;2;2;2],[0;0;-1;-2;-3;0;0;0]);;
+
+let fnzr1b = rowmaskpos([2;2;4;5;6;2;2;2],[0;0;-1;-2;-3;0;0;0]);;
+
+let fnzr2 = rowmaskpos([2;2;4;5;6;2;2;2],[0;0;+1;+2;+3;0;0;0]);;
+
+let fnzr2b = rowmaskneg([2;2;4;5;6;2;2;2],[0;0;+1;+2;+3;0;0;0]);;
+
+let fnz1 = firstnonzero(maskneg(i1,diffIm(i1,i2)));;
+
+let fnz2 = firstnonzero(maskpos(i2,diffIm(i1,i2)));;
+
+let td1 = tuplediffint((5,4),(2,5));;
+
+(* the bigger tests *)
+
+let ans1 = motion(i1,i2);;
+        
+let ans2 = motion(i1b,i2b);;
+
+let ans2c = motion(i1c,i2c);;  
+
+let ans2d = motion(i1d,i2d);;  
+
+let ans3ex = motion(i1,i1);; (* throws exception; test last *)
+
+
